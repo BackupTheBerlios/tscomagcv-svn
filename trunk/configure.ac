@@ -32,6 +32,12 @@ ACLTX_PACKAGE(xspace,scrartcl,ltx_pkg_xspace,[],
 	      [AC_MSG_ERROR([Unable to find the xspace package])])
 ACLTX_PACKAGE(svn,scrartcl,ltx_pkg_svn,[],
 	      [AC_MSG_ERROR([Unable to find the svn package])])
+ACLTX_PACKAGE(svn,scrartcl,ltx_pkg_booktabs,[],
+	      [AC_MSG_ERROR([Unable to find the booktabs package])])
+ACLTX_PACKAGE(svn,scrartcl,ltx_pkg_tabularx,[],
+	      [AC_MSG_ERROR([Unable to find the tabularx package])])
+ACLTX_PACKAGE(svn,scrartcl,ltx_pkg_hyperref,[],
+	      [AC_MSG_ERROR([Unable to find the hyperref package])])
 AC_CONFIG_FILES([
 	Makefile
 	doc/Makefile
