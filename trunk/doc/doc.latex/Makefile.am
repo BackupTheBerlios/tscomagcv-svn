@@ -20,16 +20,17 @@
 LATEXMD5SUFFIXES = .aux .idx .ind
 LATEXTMPSUFFIXES = .log .aux .toc .lot .lof .idx .ind .ilg .bbl .blg
 
-pdfdir     = $(docdir)/doc.pdf
-pdf_DATA   = data.pdf
+pdfdir      = $(docdir)/doc.pdf
+pdf_DATA    = data.pdf
 
-tex_SOURCE = $(foreach pdffile,$(pdf_DATA),\
-                       $(addsuffix .tex,$(basename $(pdffile))))
+tex_SOURCE  = $(foreach pdffile,$(pdf_DATA),\
+                        $(addsuffix .tex,$(basename $(pdffile))))
 
 CLEANFILES = $(foreach suffix,$(LATEXTMPSUFFIXES)\
                              ,$(foreach pdffile,$(pdf_DATA),\
                                         $(addsuffix $(suffix),\
                                                     $(basename $(pdffile)))))
+SOURCE_EXTRA = $(tex_SOURCE)
 
 -include $(top_srcdir)/Makefile.rules/Makefile.latex-rules
 

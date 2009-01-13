@@ -23,6 +23,15 @@ AC_PROG_GREP
 ACLTX_PROG_PDFLATEX
 ACLTX_PROG_MAKEINDEX
 ACLTX_PROG_BIBTEX
+ACLTX_KOMA_SCRIPT
+# Note: We don't test for LaTeX packages from base, tools and required,
+#       because they have to be at every valid LaTeX installation.
+ACLTX_PACKAGE(lmodern,scrartcl,ltx_pkg_lmodern,[],
+	      [AC_MSG_ERROR([Unable to find the font package lmodern])])
+ACLTX_PACKAGE(xspace,scrartcl,ltx_pkg_xspace,[],
+	      [AC_MSG_ERROR([Unable to find the xspace package])])
+ACLTX_PACKAGE(svn,scrartcl,ltx_pkg_svn,[],
+	      [AC_MSG_ERROR([Unable to find the svn package])])
 AC_CONFIG_FILES([
 	Makefile
 	doc/Makefile
