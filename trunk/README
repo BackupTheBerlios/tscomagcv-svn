@@ -1,0 +1,83 @@
+Project Full Name:         Comag Stream Converter
+Project Unix Name:         tscomagcv
+SVN Server:                svn.berlios.de/svnroot/repos/tscomagcv/trunk
+Web Server:                tscomagcv.berlios.de
+Project Short Description: Documentation of the files of Comag PVR2/100CI
+                           aka Silvercrest SL80/2 100CI.
+Project Members:           Markus Kohm (Admin) <mjk at users.berlios.de>
+Status:                    "1 - Planning" up to "2 - Pre Alpha"
+
+------------------------------------------------------------------------------
+
+Project Long Description:
+-------------------------
+
+The records of Comag PVR2/100CI or Silvercrest SL80/2 100CI are folders
+rec_DDDD (DDDD is a four digit decimal number) with MPEG TS files rec.ts,
+rec.01, rec.02 ..., and additional informations at a file meta.dat, rec.cp and
+rec.bm.  The MPEG TS files has a special format with header and padding
+sequences.  First purpose of this project is documentation for all these
+files.  Second pupose are some programs to analyse, gernate or manipulate the
+records.
+
+------------------------------------------------------------------------------
+
+Directory Organization:
+-----------------------
+
+The files of the project are organized at directories:
+
+doc/          - all the documentation
++- doc.latex/    - documentation in LaTeX format
+|  +- Makefile        - create other formats from the LaTeX format
+|     index.tex       - the start file for the LaTeX documentation
++- doc.html/  - documentation in HTML format
+|  +- index.html      - the start file for the HTML documentation
++- doc.pdf/   - documentation in PDF format
+
+------------------------------------------------------------------------------
+
+How to checkout the source from SVN:
+====================================
+
+You may checkout the source using SVN access or HTTP access.
+
+Anonymous SVN Access via SVN:
+-----------------------------
+
+Use the command:
+
+    svn checkout svn://svn.berlios.de/tscomagcv/trunk
+
+to checkout the current sources of the project to the current working
+directory.
+
+Anonymous SVN Access via HTTP:
+------------------------------
+
+Use the command:
+
+    svn checkout http://svn.berlios.de/svnroot/repos/tscomagcv/trunk
+
+to checkout the current sources of the project to the current working
+directory.
+
+How to update your local working copy:
+======================================
+
+After the first checkout you may update your local working copy simply by
+entering the directory with the local working copy and use:
+
+    svn update
+
+------------------------------------------------------------------------------
+
+For the latest news see file NEWS.
+
+For important changes since the last release see file CHANGES.
+
+For license information see file COPYING.
+
+For building an installing the documentation see file INSTALL.
+
+------------------------------------------------------------------------------

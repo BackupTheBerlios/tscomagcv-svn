@@ -1,0 +1,11 @@
+NOTE: WE ARE AT THE PHASE "1 - Planning", SO NOTHING DOES WORK CURRENTLY. 
+      EVEN THE AUTO-CONFIGURE PROCESS IS NOT YET FINISHED!
+
+You need autoconf and automake to generate the initial source from SVN.
+Then you may call
+
+     aclocal -I m4
+     autoconf
+     automake --add-missing
+
+To generate the initial source.
