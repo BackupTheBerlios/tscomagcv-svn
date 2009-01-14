@@ -32,12 +32,18 @@ ACLTX_PACKAGE(xspace,scrartcl,ltx_pkg_xspace,[],
 	      [AC_MSG_ERROR([Unable to find the xspace package])])
 ACLTX_PACKAGE(svn,scrartcl,ltx_pkg_svn,[],
 	      [AC_MSG_ERROR([Unable to find the svn package])])
-ACLTX_PACKAGE(svn,scrartcl,ltx_pkg_booktabs,[],
+ACLTX_PACKAGE(booktabs,scrartcl,ltx_pkg_booktabs,[],
 	      [AC_MSG_ERROR([Unable to find the booktabs package])])
-ACLTX_PACKAGE(svn,scrartcl,ltx_pkg_tabularx,[],
+ACLTX_PACKAGE(tabularx,scrartcl,ltx_pkg_tabularx,[],
 	      [AC_MSG_ERROR([Unable to find the tabularx package])])
-ACLTX_PACKAGE(svn,scrartcl,ltx_pkg_hyperref,[],
+ACLTX_PACKAGE(hyperref,scrartcl,ltx_pkg_hyperref,[],
 	      [AC_MSG_ERROR([Unable to find the hyperref package])])
+ACLTX_PACKAGE(xcolor,scrartcl,ltx_pkg_xcolor,[],
+	      [AC_MSG_ERROR([Unable to find the xcolor package])])
+ACLTX_PACKAGE(colortbl,scrartcl,ltx_pkg_colortbl,[],
+	      [AC_MSG_ERROR([Unable to find the colortbl package])])
+ACLTX_PACKAGE(amsmath,scrartcl,ltx_pkg_amsmath,[],
+	      [AC_MSG_ERROR([Unable to find the amsmath package])])
 AC_CONFIG_FILES([
 	Makefile
 	doc/Makefile

@@ -18,7 +18,7 @@
 #
 
 LATEXMD5SUFFIXES = .aux .idx .ind
-LATEXTMPSUFFIXES = .log .aux .toc .lot .lof .idx .ind .ilg .bbl .blg
+LATEXTMPSUFFIXES = .log .aux .toc .lot .lof .idx .ind .ilg .bbl .blg .out
 
 pdfdir      = $(docdir)/doc.pdf
 pdf_DATA    = data.pdf

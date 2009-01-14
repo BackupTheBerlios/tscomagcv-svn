@@ -24,8 +24,10 @@
 \usepackage{alltt}
 \usepackage{xspace}
 \usepackage{booktabs,tabularx}
+\usepackage{amsmath}
 \usepackage{svn}\SVN $Id$
 \usepackage{hyperref}
+\usepackage[tables]{xcolor}
 
 \hypersetup{%
   pdftitle={Data Formats of the Comag PVR2/100CI or Silvercrest SL80/2 100CI},
@@ -113,7 +115,7 @@ Word first. \emph{Unknown} Bytes may have different values. \emph{Fixed} Bytes
 have always the same value. \emph{Reserved} Bytes are fixed Bytes with value
 0x00.
 
-\begin{table}
+\begin{table}\small
   \centering
   \captionabove{Structure of the \texttt{meta.dat}}
   \begin{tabularx}{\textwidth}{>{\ttfamily}r@{:\hskip2\tabcolsep}r@{~}ll>{\raggedright}X}
@@ -229,7 +231,331 @@ for the receiver. If they are missing or broken, the \Comag cannot play the
 record an may even hang up.
 
 
-\subsection{Comag TS header}
+\subsection{General Information about TS}
+\label{sec:ts-general}
+
+MPEG transport streams (TS) consists of single packets of 188 octets. An octet
+are 8~bits. For building Bytes from octets you have to but the first sended
+bit of the octet into the highest bit of the Byte, the second sendes bit into
+the second highest bit of the Byte and so on until the 8th sended bit will
+stay in the lowest bit of the Byte. So a data stream of 10101010 (first sendes
+bit is the right most) will become the Byte 0x33. We use Bytes in this
+documentation!
+
+Many general informations about TS may be found at \cite{iso13818-1},
+\cite{iso13818-2}, \cite{iso13818-3}, and \cite{iso13818-4}. The \Comag uses
+only some packets. So we describe only them in this document. The general
+structure of TS~packets may be found at \autoref{tab:ts-general}.
+
+\begin{table}\small
+  \centering
+  \captionabove{General structure of a transport stream packet}
+  \begin{tabularx}{\textwidth}{>{\ttfamily}ll>{\raggedright}X}
+    \toprule
+    \multicolumn1l{Name} & No. of bits & Comment \tabularnewline
+    \midrule
+    sync\_byte                    &  8 & must be 0100\,0111 (0x47) 
+                                        \tabularnewline
+    transport\_error\_indicator  &  1 & set if there is an error at the packet
+                                        \tabularnewline
+    payload\_unit\_start\_indicator &  1 & set if payload starts with the first
+                                        bytes of a PES or a PSI packet
+                                        \tabularnewline
+    transport\_priority          &  1 & set if the packet has priority above
+                                        other packets\tabularnewline
+    PID                          & 13 & type of data see \autoref{tab:PID}
+                                        \tabularnewline
+    transport\_scrambling\_control &  2 & scrambling mode for the
+                                        \texttt{data\_byte[]} only; 
+                                        Null packets should never be
+                                        scrambled; 00 = not scrambled
+                                        \tabularnewline
+    adaptation\_field\_control   &  2 & 00 = reserved\\
+                                        01 = no adaptation field, payload at
+                                        \texttt{data\_byte[]}\\
+                                        10 = adaptation field, no payload\\
+                                        11 = adaptation field, payload at
+                                        \texttt{data\_byte[]}
+                                        \tabularnewline
+    continuity\_counter          &  4 & used to recognize duplicate packets
+                                        \tabularnewline
+    adaptation\_field            &$8N$& for size see description of adaptation
+                                        field
+                                        \tabularnewline
+    data\_byte[]                 &$8S$& PES, PSI, stuffing, private data;
+                                        $S = 184 - N$
+                                        \tabularnewline
+    \bottomrule
+  \end{tabularx}
+  \label{tab:ts-general}
+\end{table}
+
+\paragraph{Additional information so some elements of the TS~packet:}
+\setkomafont{descriptionlabel}{\ttfamily}
+\begin{description}
+\item[sync\_byte] -- In theory the TS does not need to start with a packet and
+  one packet does not need to follow a packet. Packets may be recognized by a
+  \emph{sync\_byte} Byte. But it seams that at the records of the \Comag the
+  files consists only of packets and no \emph{garbage} may be found before the
+  first packet or between packets.
+\item[payload\_unit\_start\_indicator] -- PES or PSI packets may be longer
+  than 184~bytes minus the length of an optional adaptation field. At the
+  first TS packet of a PES or PSI packet this bit should be 1. If no PES or
+  PSI packet starts at the TS packet the bit should be 0.
+
+  For null packets the \texttt{payload\_unit\_start\_indicator} should also be
+  0.
+
+  For private data not of \texttt{stream\_type} 5 or 6 the meaning is not
+  defined.
+\item[transport\_priority] -- Depending on the decoder this bit may be related
+  to the PID of the packet or not.
+\item[PID] -- An general overview of the PIDs may be found in
+  \autoref{tab:PID}. Important for the \Comag are null packets with PID
+  0x1fff, that may be Comag info packets, program association table (PAT) with
+  PID 0x0000, and audio, videom and program map table (PMT) with PID
+  0x0010\dots 0x1ffe.
+\item[transport\_scrambling\_control] -- This document does not handle
+  scambled data, so this should be 00 at least for private packets, PAT, and
+  PMT.
+\item[adaptation\_field\_control] -- We split this into \texttt{AF} and
+  \texttt{PD}. The first (topmost) bit is \texttt{AF}. If \texttt{AF} was set,
+  the \texttt{adaptation\_field} is used and $N$ ist not 0. The second (lower)
+  bit is \texttt{PD}. If \texttt{PD} was set, the \texttt{data\_byte[]} array
+  has payload data and not only suffing bytes.
+\item[continuity\_counter] -- This value is PID dependent. Is increases for
+  every packets with the same PID. If two consecutive TS packets have the same
+  PID and the same \texttt{continuity\_counter} they are
+  duplicates. Duplicates may be send for synchronization purpose.
+\item[adaptation\_field] -- The adaptation field may have several data. Most
+  interesting are PCR and DTS, that are clock informations. Detailed
+  information about the adaptation field may be found at
+  \autoref{sec:adaptation-field}.
+\item[{data\_byte[]}] -- This array may contain either of stuffing bytes 0xff or
+  of payload. Payload is the data of private packets, null packets, PES, PSI.
+\end{description}
+
+
+\subsection{Adaptation Field at Transport Stream Packets}
+\label{sec:adaptation-field}
+
+The adaptation field may have several data. Most interesting are PCR and DTS,
+that are clock informations. The adaptation field may also used for stuffing
+at packets with PES packets. The general structure of adaptation fields may be
+found at \autoref{tab:adaptation-field}. The adaptation field is only part of
+the TS~packet if the \texttt{AF} is 1.
+
+\begin{table}\small
+  \begin{addmargin}[-4em]{-4em}
+    \addtolength{\textwidth}{8em}
+  \captionabove{General structure of the adaptation field}
+  \begin{tabularx}{\textwidth}{>{\ttfamily}lr>{\raggedright}X}
+    \toprule
+    \multicolumn1l{Name} & \hspace{-2em}No. of bits & Comment \tabularnewline
+    \midrule
+    adaptation\_field\_length      &  8 & \tabularnewline
+    discontinuity\_indicator       &  1 & only if 
+                                          $\texttt{adaptation\_field\_length} >
+                                          0$
+                                          \tabularnewline
+    random\_access\_indicator      &  1 & only if 
+                                          $\texttt{adaptation\_field\_length} >
+                                          0$
+                                          \tabularnewline
+    elementary\_stream\_priority\_indicator 
+                                   &  1 & only if 
+                                          $\texttt{adaptation\_field\_length} >
+                                          0$
+                                          \tabularnewline
+    PCR\_flag                      &  1 & only if 
+                                          $\texttt{adaptation\_field\_length} >
+                                          0$
+                                          \tabularnewline
+    OPCR\_flag                     &  1 & only if 
+                                          $\texttt{adaptation\_field\_length} >
+                                          0$
+                                          \tabularnewline
+    splicing\_point\_flag          &  1 & only if 
+                                          $\texttt{adaptation\_field\_length} >
+                                          0$
+                                          \tabularnewline
+    transport\_private\_data\_flag &  1 & only if 
+                                          $\texttt{adaptation\_field\_length} >
+                                          0$
+                                          \tabularnewline
+    adaptation\_field\_extension\_flag 
+                                   &  1 & only if 
+                                          $\texttt{adaptation\_field\_length} >
+                                          0$
+                                          \tabularnewline
+    program\_clock\_reference\_base
+                                   & 33 & only if $\texttt{PCR\_flag} = 1$
+                                          \tabularnewline
+    reserved                       &  6 & only if $\texttt{PCR\_flag} = 1$
+                                          \tabularnewline
+    program\_clock\_reference\_extension 
+                                   &  9 & only if $\texttt{PCR\_flag} = 1$
+                                          \tabularnewline
+    original\_program\_clock\_reference\_base
+                                   & 33 & only if $\texttt{OPCR\_flag} = 1$
+                                          \tabularnewline
+    reserved                       &  6 & only if $\texttt{OPCR\_flag} = 1$
+                                          \tabularnewline
+    original\_program\_clock\_reference\_extension 
+                                   &  9 & only if $\texttt{OPCR\_flag} = 1$
+                                          \tabularnewline
+    splice\_countdown              &  8 & only if 
+                                          $\texttt{splicing\_point\_flag} = 1$
+                                          \tabularnewline
+    transport\_private\_data\_length
+                                   &  8 & only if 
+                                          $\mathtt{transport\_private\_data\_flag}
+                                          = 1$
+                                          \tabularnewline
+    transport\_private\_data\_byte[] 
+                                   &$8P$& $P =
+                                          \mathtt{transport\_private\_data\_length}$
+                                          \tabularnewline
+    adaptation\_field\_extension\_length
+                                   &  8 & only if
+                                          $\mathtt{adaptation\_field\_extension\_flag}
+                                          = 1$
+                                          \tabularnewline
+    ltw\_flag                      &  1 & only if
+                                          $\mathtt{adaptation\_field\_extension\_length}
+                                          > 0$
+                                          \tabularnewline
+    piecewise\_rate\_flag          &  1 & only if
+                                          $\mathtt{adaptation\_field\_extension\_length}
+                                          > 0$
+                                          \tabularnewline
+    seamless\_splice\_flag         &  1 & only if
+                                          $\mathtt{adaptation\_field\_extension\_length}
+                                          > 0$
+                                          \tabularnewline
+    reserved                       &  5 & only if
+                                          $\mathtt{adaptation\_field\_extension\_length}
+                                          > 0$
+                                          \tabularnewline
+    ltw\_valid\_flag               &  1 & only if
+                                          $\mathtt{ltw\_flag} = 1$
+                                          \tabularnewline
+    ltw\_offset                    & 15 & only if
+                                          $\mathtt{ltw\_flag} = 1$
+                                          \tabularnewline
+    reserved                       &  2 & only if
+                                          $\mathtt{piecewise\_rate\_flag} = 1$
+                                          \tabularnewline
+    piecewise\_rate                & 22 & only if
+                                          $\mathtt{piecewise\_rate\_flag} = 1$
+                                          \tabularnewline
+    splice\_type                   &  4 & only if
+                                          $\mathtt{seamless\_splice\_flag} =
+                                          1$
+                                          \tabularnewline
+    DTS\_next\_AU[32..30]          &  3 & only if
+                                          $\mathtt{seamless\_splice\_flag} =
+                                          1$
+                                          \tabularnewline
+    marker\_bit                    &  1 & only if
+                                          $\mathtt{seamless\_splice\_flag} =
+                                          1$
+                                          \tabularnewline
+    DTS\_next\_AU[29..15]          & 15 & only if
+                                          $\mathtt{seamless\_splice\_flag} =
+                                          1$
+                                          \tabularnewline
+    marker\_bit                    &  1 & only if
+                                          $\mathtt{seamless\_splice\_flag} =
+                                          1$
+                                          \tabularnewline
+    DTS\_next\_AU[14..0]           & 15 & only if
+                                          $\mathtt{seamless\_splice\_flag} =
+                                          1$
+                                          \tabularnewline
+    marker\_bit                    &  1 & only if
+                                          $\mathtt{seamless\_splice\_flag} =
+                                          1$
+                                          \tabularnewline
+    reserved[]                     &$8R$& only if
+                                          $\mathtt{adaptation\_field\_extension\_length}
+                                          > 1$
+                                          \tabularnewline
+    stuffing\_data[]               &$8D$& only if
+                                          $\mathtt{adaptation\_field\_length}
+                                          > 1$
+                                          \tabularnewline
+   \bottomrule
+  \end{tabularx}
+  \label{tab:adaptation-field}
+  \end{addmargin}
+\end{table}
+
+\paragraph{Additional information so some elements of the adaptation field:}
+\setkomafont{descriptionlabel}{\ttfamily}
+\begin{description}
+\item[adaptation\_field\_length] -- If this is 0x00 no more data follows in
+  the adaptation field and the \texttt{adaptation\_field\_length} is a kind of
+  single stuffing byte.
+\item[discontinuitiy\_indicator] -- If this is not present it is 0. If it is
+  1, it indicates a discontinuity either of system time-base or
+  \texttt{continuity\_counter}.
+
+  See \cite[section~2.4.3.5]{iso-13818-1} for information about system
+  time-base discontinuity.
+
+  See \cite[section~2.4.3.5]{iso-13818-1} for information about
+  \texttt{continuity\_counter} discontinuity.
+\item[random\_acess\_indicator] -- See \cite[section~2.4.3.5]{iso-13818-1} for
+  information about this.
+\item[elementary\_stream\_priority\_indicator] -- See
+  \cite[section~2.4.3.5]{iso-13818-1} for information about this.
+\item[PCR\_flag] -- 1 indicates a PCR field at the adaptation field.
+\item[OPCR\_flag] -- 1 indicates a OPCR field at the adaptation field.
+\item[splicing\_point\_flag] -- 1 indicates a \texttt{splice\_countdown} field
+  in the adaptation field.
+\item[transport\_private\_data\_flag] -- 1 indicates one or more
+  \texttt{transport\_private\_data\_byte} in the adaptation field.
+\item[adaptation\_field\_extension\_flag] -- 1 indicates adaptation field
+  extensions at the adaptation field.
+\item[program\_clock\_reference\_base; program\_clock\_referenc\_extension]
+  The program clock reference (PCR) is a 42~bit~value giving the program clock
+  in 27~MHz. It is calculated:
+  \begin{align}
+  \mathrm{PCR} &= 300 \cdot \mathtt{program\_clock\_reference\_base} \notag\\
+               &+ \mathtt{program\_clock\_reference\_extension}\,.
+  \end{align}
+\item[original\_program\_clock\_reference\_base] -- See
+  \texttt{program\_clock\_reference\_base}.
+\item[original\_program\_clock\_referenc\_extension] -- See \texttt{program\_clock\_referenc\_extension}.
+\item[splice\_countdown] -- See
+  \cite[section~2.4.3.5]{iso-13818-1} for information about this.
+\item[transport\_private\_data\_length] -- See
+  \cite[section~2.4.3.5]{iso-13818-1} for information about this.
+\item[transport\_private\_data\_byte] -- See
+  \cite[section~2.4.3.5]{iso-13818-1} for information about this.
+\item[adaptation\_field\_extension\_length] -- See
+  \cite[section~2.4.3.5]{iso-13818-1} for information about this.
+\item[ltw\_flag] -- See
+  \cite[section~2.4.3.5]{iso-13818-1} for information about this.
+\item[piecewise\_rate\_flag] -- See
+  \cite[section~2.4.3.5]{iso-13818-1} for information about this.
+\item[seamless\_splice\_flag] -- See
+  \cite[section~2.4.3.5]{iso-13818-1} for information about this.
+\item[ltw\_valid\_flag] -- See
+  \cite[section~2.4.3.5]{iso-13818-1} for information about this.
+\item[ltw\_offset] -- See
+  \cite[section~2.4.3.5]{iso-13818-1} for information about this.
+\item[piecewise\_rate] -- See
+  \cite[section~2.4.3.5]{iso-13818-1} for information about this.
+\item[splice\_type] -- See
+  \cite[section~2.4.3.5]{iso-13818-1} for information about this.
+\item[stuffing\_data] -- See
+  \cite[section~2.4.3.5]{iso-13818-1} for information about this.
+\end{description}
+
+
+\subsection{Comag TS Header}
 \label{sec:comag-ts-header}
 
 The header consists of 5 packets: null packet, null packet, PMT packet, PAT
@@ -337,6 +663,7 @@ out the semantic.
 
 %%% Local Variables: 
 %%% mode: latex
-%%% mode: reftex
 %%% TeX-master: t
+%%% mode: reftex
+%%% reftex-plug-into-AUCTeX: t
 %%% End: 
