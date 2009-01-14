@@ -290,7 +290,7 @@ structure of TS~packets may be found at \autoref{tab:ts-general}.
   \label{tab:ts-general}
 \end{table}
 
-\paragraph{Additional information so some elements of the TS~packet:}
+\paragraph{Additional information to some elements of the TS~packet:}
 \setkomafont{descriptionlabel}{\ttfamily}
 \begin{description}
 \item[sync\_byte] -- In theory the TS does not need to start with a packet and
@@ -491,7 +491,7 @@ the TS~packet if the \texttt{AF} is 1.
   \end{addmargin}
 \end{table}
 
-\paragraph{Additional information so some elements of the adaptation field:}
+\paragraph{Additional information to some elements of the adaptation field:}
 \setkomafont{descriptionlabel}{\ttfamily}
 \begin{description}
 \item[adaptation\_field\_length] -- If this is 0x00 no more data follows in
@@ -530,28 +530,34 @@ the TS~packet if the \texttt{AF} is 1.
 \item[original\_program\_clock\_referenc\_extension] -- See \texttt{program\_clock\_referenc\_extension}.
 \item[splice\_countdown] -- See
   \cite[section~2.4.3.5]{iso-13818-1} for information about this.
-\item[transport\_private\_data\_length] -- See
-  \cite[section~2.4.3.5]{iso-13818-1} for information about this.
-\item[transport\_private\_data\_byte] -- See
-  \cite[section~2.4.3.5]{iso-13818-1} for information about this.
-\item[adaptation\_field\_extension\_length] -- See
-  \cite[section~2.4.3.5]{iso-13818-1} for information about this.
-\item[ltw\_flag] -- See
-  \cite[section~2.4.3.5]{iso-13818-1} for information about this.
-\item[piecewise\_rate\_flag] -- See
-  \cite[section~2.4.3.5]{iso-13818-1} for information about this.
-\item[seamless\_splice\_flag] -- See
-  \cite[section~2.4.3.5]{iso-13818-1} for information about this.
-\item[ltw\_valid\_flag] -- See
-  \cite[section~2.4.3.5]{iso-13818-1} for information about this.
+\item[transport\_private\_data\_length] -- The length of the data at the
+  immediate following \texttt{transport\_private\_data\_byte[]}. The data
+  itself should not extends beyound the adaptation field. So the
+  \texttt{transport\_private\_data\_length} should be at least less than 181
+  and even lesser if PCR, OPCR or \texttt{splice\_dountdown} are used.
+\item[{transport\_private\_data\_byte[]}] -- The data of this field is no
+  specified by IEC.
+\item[adaptation\_field\_extension\_length] -- The length of the 
+  immediate following data including reserved bytes if pressent.
+\item[ltw\_flag] -- 1 indicates \texttt{ltw\_valid} and \texttt{ltw\_offset} at
+  the extension.
+\item[piecewise\_rate\_flag] -- 1 indicates \texttt{piecewise\_rate} at the
+  extension.
+\item[seamless\_splice\_flag] -- 1 indicate \texttt{splice\_type},
+  \texttt{DTS\_next\_AU} and the \texttt{marker\_bit}s at the extension. Note,
+  that it should be 1 only if the \texttt{splicing\_point\_flag} is 1 too.
+\item[ltw\_valid\_flag] -- 1 indicates, that the value of \texttt{ltw\_offset}
+  is valid. 0 indicates, that the value of \texttt{ltw\_offset} is undefined.
 \item[ltw\_offset] -- See
   \cite[section~2.4.3.5]{iso-13818-1} for information about this.
-\item[piecewise\_rate] -- See
+\item[piecewise\_rate] -- The value of this is only valid if both
+  \texttt{ltw\_flag} and \texttt{ltw\_valid\_flag} are set to 1. See
   \cite[section~2.4.3.5]{iso-13818-1} for information about this.
 \item[splice\_type] -- See
   \cite[section~2.4.3.5]{iso-13818-1} for information about this.
-\item[stuffing\_data] -- See
-  \cite[section~2.4.3.5]{iso-13818-1} for information about this.
+\item[DTS\_next\_AU]  -- 33 bit value of the DTS. 
+\item[{stuffing\_data[]}] -- All these bytes are 1111\,1111 (0xff). They are
+  used to stuff the TS packet to 188 bytes.
 \end{description}
 
 
@@ -664,6 +670,7 @@ out the semantic.
 %%% Local Variables: 
 %%% mode: latex
 %%% TeX-master: t
+%%% mode: Tex-pdf
 %%% mode: reftex
 %%% reftex-plug-into-AUCTeX: t
 %%% End: 
