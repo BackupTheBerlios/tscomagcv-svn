@@ -18,6 +18,6 @@
 #
 
 ACLOCAL_AMFLAGS = -I m4
-SUBDIRS = doc
+SUBDIRS = doc tools
 
 EXTRA_DIST = CHANGES

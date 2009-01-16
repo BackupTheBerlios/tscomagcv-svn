@@ -17,6 +17,7 @@
 #
 
 AC_INIT([comag], [0.1], [mjk at users.berlios.de])
+AC_CONFIG_AUX_DIR([.])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 AC_PROG_LIBTOOL
 AC_PROG_CXX

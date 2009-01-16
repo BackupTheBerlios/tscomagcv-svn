@@ -17,6 +17,7 @@
 #
 
 AC_INIT([tscomagcv], [0.1], [mjk at users.berlios.de])
+AC_CONFIG_AUX_DIR([.])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 AC_PROG_MD5SUM
 AC_PROG_GREP
@@ -49,4 +50,5 @@ AC_CONFIG_FILES([
 	doc/Makefile
 	doc/doc.latex/Makefile
 ])
+AC_CONFIG_SUBDIRS([tools])
 AC_OUTPUT
