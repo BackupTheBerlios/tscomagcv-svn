@@ -1,0 +1,17 @@
+Begin3
+Title:          kfile_metadat -- KFilePluggin for COMAG PVR2/100CI meta.dat
+Version:        0.1
+Entered-date:   2009-01-19
+Description:    This KDE-Pluggin for e.g. Konqueror shows meta info of the
+                meta.dat from records of COMAG PVR2/100CI
+Keywords:       KDE Qt
+Author:         Markus Kohm <mkohm at users.berlios.de>
+Maintained-by:  Markus Kohm <mkohm at users.berlios.de>
+Home-page:      http://developer.berlios.de/projects/tscomagcv
+Alternate-site: 
+Primary-site:   http://developer.berlios.de/projects/tscomagcv
+                xxxxxx  kfile_metadat-0.1.tar.gz
+                xxx     kfile_metadat-0.1.lsm
+Platform:       Linux. Needs KDE 3
+Copying-policy: GPL
+End

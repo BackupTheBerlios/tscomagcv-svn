@@ -1,0 +1,9 @@
+To produce all essential files for distribution or make process simply call
+
+   make -f Makefile.cvs
+
+If you want to use kdevelop, you may use
+
+   cd <project directory>
+   kdevelop kfile_metadat.kdevelop
+

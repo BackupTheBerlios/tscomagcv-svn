@@ -69,10 +69,11 @@ namespace comag {
 	     unsigned short service=S_TV);
 	meta(const meta &m);
 	meta(const meta *m);
+	meta(const unsigned char *buffer);
 	meta(std::istream &s);
 
 	void read(std::istream &s);
-	const void write(std::ostream &s);
+	void write(std::ostream &s);
 	void reset(void);
 
 	enum_title gettitle_type() { return title_type; }

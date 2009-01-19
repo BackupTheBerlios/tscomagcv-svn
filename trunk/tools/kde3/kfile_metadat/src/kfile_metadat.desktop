@@ -1,0 +1,39 @@
+[Desktop Entry]
+Type=Service
+Name=COMAG PVR2/100CI meta.dat Info
+Name[br]=Titouriñ diwar-benn COMAG PVR2/100CI meta.dat
+Name[ca]=Informació per a COMAG PVR2/100CI meta.dat
+Name[da]=COMAG PVR2/100CI meta.dat info
+Name[el]=Πληροφορίες COMAG PVR2/100CI meta.dat
+Name[es]=Información de COMAG PVR2/100CI meta.dat
+Name[et]=COMAG PVR2/100CI meta.dat info
+Name[eu]=COMAG PVR2/100CI meta.dat informazioa
+Name[fa]=اطلاعات COMAG PVR2/100CI meta.dat
+Name[fr]=Informations sur COMAG PVR2/100CI meta.dat
+Name[ga]=Eolas faoi COMAG PVR2/100CI meta.dat
+Name[gl]=Información de COMAG PVR2/100CI meta.dat
+Name[hu]=COMAG PVR2/100CI meta.dat jellemzői
+Name[it]=Informazioni su COMAG PVR2/100CI meta.dat
+Name[nds]=COMAG PVR2/100CI meta.dat-Info
+Name[ne]=COMAG PVR2/100CI meta.dat सूचना
+Name[pl]=Informacje dla COMAG PVR2/100CI meta.dat
+Name[pt]=Informação do COMAG PVR2/100CI meta.dat
+Name[pt_BR]=Informações de COMAG PVR2/100CI meta.dat
+Name[ru]=Информация о COMAG PVR2/100CI meta.dat
+Name[sk]=COMAG PVR2/100CI meta.dat info
+Name[sl]=Informacije o COMAG PVR2/100CI meta.dat
+Name[sr]=Информације за COMAG PVR2/100CI meta.dat
+Name[sr@Latn]=Informacije za COMAG PVR2/100CI meta.dat
+Name[sv]=COMAG PVR2/100CI meta.dat information
+Name[ta]=COMAG PVR2/100CI meta.dat தகவல்
+Name[tg]=Маълумот дар бораи COMAG PVR2/100CI meta.dat 
+Name[zh_CN]=COMAG PVR2/100CI meta.dat的信息
+Name[zh_TW]=COMAG PVR2/100CI meta.dat 資訊
+ServiceTypes=KFilePlugin
+X-KDE-Library=kfile_metadat
+# change MimeType here! (example: inode/directory)
+MimeType=application/x-comag
+# change PreferredGroups here! (example: FolderInfo)
+PreferredGroups=Technical
+# change PreferredItems here! (example: Items;Size)
+PreferredItems=Title,Title Type,Service,Start Date,Start Time,Duration,Packets,PID,Timer

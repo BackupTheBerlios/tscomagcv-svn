@@ -1,0 +1,80 @@
+# SOME DESCRIPTIVE TITLE.
+# This file is put in the public domain.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-01-19 18:06+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: kfile_metadat.cpp:51
+msgid "Technical Details"
+msgstr "Technische Details"
+
+#: kfile_metadat.cpp:56
+msgid "Title"
+msgstr "Titel"
+
+#: kfile_metadat.cpp:57
+msgid "Type of Title"
+msgstr "Art des Titels"
+
+#: kfile_metadat.cpp:59
+msgid "Start Time"
+msgstr "Startzeit"
+
+#: kfile_metadat.cpp:60
+msgid "Start Date"
+msgstr "Startdatum"
+
+#: kfile_metadat.cpp:62
+msgid "Recorded on"
+msgstr "Aufnahme vom"
+
+#: kfile_metadat.cpp:64
+msgid "Duration"
+msgstr "Dauer"
+
+#: kfile_metadat.cpp:65
+msgid "Packets"
+msgstr "Anzahl der Comag Pakete"
+
+#: kfile_metadat.cpp:66
+msgid "Type of Service"
+msgstr "Art der Aufnahme"
+
+#: kfile_metadat.cpp:67
+msgid "Programm-ID"
+msgstr "Programm-ID"
+
+#: kfile_metadat.cpp:68
+msgid "Timer Number"
+msgstr "Timernummer"
+
+#: kfile_metadat.cpp:102
+msgid "Transmission"
+msgstr "Sendung"
+
+#: kfile_metadat.cpp:104
+msgid "Station"
+msgstr "Sender"
+
+#: kfile_metadat.cpp:105 kfile_metadat.cpp:128
+msgid "Unknown"
+msgstr "Unbekannt"
+
+#: kfile_metadat.cpp:126
+msgid "Radio"
+msgstr "Radio"
+
+#: kfile_metadat.cpp:128
+msgid "TV"
+msgstr "TV"

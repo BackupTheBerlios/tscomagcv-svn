@@ -125,8 +125,8 @@ namespace comag {
     meta::meta(std::istream &s) {
 	this->read(s);
     };
-    
-    const void meta::write(std::ostream &o) {
+
+    void meta::write(std::ostream &o) {
 	unsigned char buffer[112];
 	memset(buffer, 0, 112);
 	memcpy(buffer, "\x05\x00\x72\x6a\x07", 5);
@@ -161,12 +161,7 @@ namespace comag {
 	o.write( (char *)buffer, 112 );
     }
     
-    void meta::read(std::istream &s) {
-	unsigned char buffer[112];
-	s.exceptions( std::istream::eofbit | 
-		      std::istream::failbit | 
-		      std::istream::badbit ); // Throw every problem
-	s.read( (char *)buffer, 112 );
+    meta::meta(const unsigned char *buffer) {
 	if ( memcmp( buffer,"\x05\x00\x72\x6a\x07\x00\x00\x00\x00\x00\x00\x00", 
 		     12 ) ||
 	     buffer[0x4e] || 
@@ -220,6 +215,15 @@ namespace comag {
 	pid = buffer[0x68] | (buffer[0x69] << 8);
 	timer = buffer[0x6c] | (buffer[0x6d] << 8) | 
 	    (buffer[0x6e] << 16) | (buffer[0x6f] << 24);
+    }
+
+    void meta::read(std::istream &s) {
+	unsigned char buffer[112];
+	s.exceptions( std::istream::eofbit | 
+		      std::istream::failbit | 
+		      std::istream::badbit ); // Throw every problem
+	s.read( (char *)buffer, 112 );
+	*this = meta::meta(buffer);
     }
     
     ostream& operator<< (ostream &os, meta &m) {
