@@ -37,4 +37,9 @@ AC_CONFIG_FILES([
 	Makefile
 	source/Makefile
 ])
+
+if test "x$package_kfile_enabled" == "xyes"; then
+   AC_CONFIG_SUBDIRS([kde3/kfile_metadat])
+fi
+
 AC_OUTPUT
