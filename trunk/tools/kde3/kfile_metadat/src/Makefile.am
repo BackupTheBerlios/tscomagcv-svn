@@ -7,9 +7,9 @@ noinst_HEADERS   = kfile_metadat.h
 
 kde_module_LTLIBRARIES = kfile_metadat.la
 
-kfile_metadat_la_SOURCES = kfile_metadat.cpp $(abs_top_sourcedir()/../source/.libs/comag_meta.o
+kfile_metadat_la_SOURCES = kfile_metadat.cpp
 kfile_metadat_la_LDFLAGS = $(all_libraries) -module $(KDE_PLUGIN)
-kfile_metadat_la_LIBADD = $(LIB_KIO) $(top_srcdir)/../../source/comag_meta.o
+kfile_metadat_la_LIBADD = $(LIB_KIO) $(top_srcdir)/../../source/.libs/comag_meta.o
 
 # let automoc handle all of the meta source files (moc)
 METASOURCES = AUTO
