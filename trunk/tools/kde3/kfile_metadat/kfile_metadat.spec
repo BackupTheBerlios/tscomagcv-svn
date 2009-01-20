@@ -4,26 +4,25 @@
 
 Name: kfile_metadat
 Version: 0.1
-Release: 1
-Vendor: 
-Copyright: GPL
-Summary: KFile-Plugin for COMAG PVR2/100CI meta.dat
+Release: 2
+Vendor: KOMA
+License: GPL
+Summary: comag meta.dat KFile Plugin
 Group: System/GUI/KDE
 Packager: Markus Kohm
-BuildRoot:  %{_tmppath}/%{name}-root 
-Source: 
+BuildRoot:  %{_tmppath}/%{name}-buildroot 
+Source: %{name}-%{version}.tar.gz
 
 %description
-Dies ist eine frühe Alpha-Version des meta.dat File Plugins für KDE 3.5.
+This is a early BETA of a KFile plugin for KDE 3.
+For meta.dat files from COMAG PVR2/100CI it extends the file information
+menu of e.g. Konqueror with the meta infos from the file.
 
 %prep
 %setup
-CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" ./configure \ 
---target=
---disable-debug --enable-debug=no 
 
 %build
-%configure
+./configure
 make
 
 %install
@@ -38,9 +37,12 @@ rm -rf %{buildroot}
 %files
 %defattr(-, root, root)
 %doc AUTHORS COPYING ChangeLog NEWS README TODO
-%{_bindir}/*
-%{_libdir}/*.so.*
-%{_datadir}/%{name}
-%{_mandir}/man8/*
-%changelog
+/opt/kde3/lib/kde3/kfile_metadat*
+/opt/kde3/share/doc/HTML/en/kfile_metadat/
+/opt/kde3/share/locale/*/LC_MESSAGES/kfile_metadat.mo
+/opt/kde3/share/services/kfile_metadat.desktop
+/opt/kde3/share/mimelnk/application/x-comag.desktop
 
+%changelog
+* Tue Jan 20 2009 Markus Kohm <mjk at users.berlios.de>
+- Fixed: x-coma.desktop missing

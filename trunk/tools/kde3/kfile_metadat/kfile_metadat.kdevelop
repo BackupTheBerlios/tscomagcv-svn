@@ -71,7 +71,7 @@
   <kdevautoproject>
     <general>
       <activetarget>src/kfile_metadat.la</activetarget>
-      <useconfiguration>debug</useconfiguration>
+      <useconfiguration>default</useconfiguration>
     </general>
     <configurations>
       <optimized>
@@ -229,4 +229,33 @@
       <implementationsuffix>.cpp</implementationsuffix>
     </filetemplates>
   </cppsupportpart>
+  <dist>
+    <custom>false</custom>
+    <bzip>false</bzip>
+    <archname></archname>
+    <appname>kfile_metadat</appname>
+    <version>0.1</version>
+    <release>1</release>
+    <vendor>KOMA</vendor>
+    <licence>GPL</licence>
+    <summary>comag meta.dat KFile Plugin</summary>
+    <group>System/GUI/KDE</group>
+    <packager>Markus Kohm</packager>
+    <description>This is a early BETA of a KFile plugin for KDE 3.
+For meta.dat files from COMAG PVR2/100CI it extends the file information
+menu of e.g. Konqueror with the meta infos from the file.
+
+</description>
+    <changelog>
+</changelog>
+    <devpackage>false</devpackage>
+    <docspackage>false</docspackage>
+    <appicon>false</appicon>
+    <arch>0</arch>
+    <genHTML>false</genHTML>
+    <useRPM>false</useRPM>
+    <ftpkde>false</ftpkde>
+    <appskde>false</appskde>
+    <url></url>
+  </dist>
 </kdevelop>
