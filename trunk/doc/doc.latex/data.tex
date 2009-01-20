@@ -23,11 +23,23 @@
 \usepackage[english]{babel}
 \usepackage{alltt}
 \usepackage{xspace}
-\usepackage{booktabs,tabularx}
+\ifx \HCode\UnDef
+\usepackage{booktabs}
+\fi
+\providecommand*\toprule{\hline}
+\providecommand*\midrule{\hline}
+\providecommand*\bottomrule{\hline}
+\usepackage{tabularx}
 \usepackage{amsmath}
 \usepackage{svn}\SVN $Id$
+\ifx \HCode\UnDef
 \usepackage{hyperref}
+\else
+\usepackage[tex4ht]{hyperref}
+\fi
 \usepackage[tables]{xcolor}
+\usepackage{babelbib}
+\bibliographystyle{babalpha-fl}
 
 \hypersetup{%
   pdftitle={Data Formats of the Comag PVR2/100CI or Silvercrest SL80/2 100CI},
@@ -117,7 +129,11 @@ have always the same value. \emph{Reserved} Bytes are fixed Bytes with value
 
 \begin{table}\small
   \centering
-  \captionabove{Structure of the \texttt{meta.dat}}
+  \ifx \Htmltrue\UnDef
+  \captionabove{Structure of the file \texttt{meta.dat}}
+  \else
+  \captionabove{Structure of the file meta.dat}
+  \fi
   \begin{tabularx}{\textwidth}{>{\ttfamily}r@{:\hskip2\tabcolsep}r@{~}ll>{\raggedright}X}
     \toprule
     \multicolumn1{r@{\quad}}{Pos.} & \multicolumn2l{Length} & Semantic & Comment\tabularnewline
@@ -288,6 +304,24 @@ structure of TS~packets may be found at \autoref{tab:ts-general}.
     \bottomrule
   \end{tabularx}
   \label{tab:ts-general}
+\end{table}
+
+\begin{table}
+  \centering
+  \captionabove{PID table}
+  \begin{tabularx}{\textwidth}{>{\ttfamily}l>{\raggedright}X}
+    \toprule
+    \multicolumn1l{PID} & Description \tabularnewline
+    \midrule
+    0x0000 & Program Association Table \tabularnewline
+    0x0001 & Conditional Access Table \tabularnewline
+    0x0002 & Transport Stream Description Table \tabularnewline
+    0x0003--0x000f & Reserved \tabularnewline
+    0x0010--0x1ffe & May be assigned as network PID, Program map PID,
+    elementary PID, Audio PID, Video PID, EPG PID, VTX PID, or for other
+    purposes (it seems that the \Comag uses 0x0012 for EPG) \tabularnewline
+  \end{tabularx}
+  \label{tab:PID}
 \end{table}
 
 \paragraph{Additional information to some elements of the TS~packet:}
@@ -501,15 +535,15 @@ the TS~packet if the \texttt{AF} is 1.
   1, it indicates a discontinuity either of system time-base or
   \texttt{continuity\_counter}.
 
-  See \cite[section~2.4.3.5]{iso-13818-1} for information about system
+  See \cite[section~2.4.3.5]{iso13818-1} for information about system
   time-base discontinuity.
 
-  See \cite[section~2.4.3.5]{iso-13818-1} for information about
+  See \cite[section~2.4.3.5]{iso13818-1} for information about
   \texttt{continuity\_counter} discontinuity.
-\item[random\_acess\_indicator] -- See \cite[section~2.4.3.5]{iso-13818-1} for
+\item[random\_acess\_indicator] -- See \cite[section~2.4.3.5]{iso13818-1} for
   information about this.
 \item[elementary\_stream\_priority\_indicator] -- See
-  \cite[section~2.4.3.5]{iso-13818-1} for information about this.
+  \cite[section~2.4.3.5]{iso13818-1} for information about this.
 \item[PCR\_flag] -- 1 indicates a PCR field at the adaptation field.
 \item[OPCR\_flag] -- 1 indicates a OPCR field at the adaptation field.
 \item[splicing\_point\_flag] -- 1 indicates a \texttt{splice\_countdown} field
@@ -529,7 +563,7 @@ the TS~packet if the \texttt{AF} is 1.
   \texttt{program\_clock\_reference\_base}.
 \item[original\_program\_clock\_referenc\_extension] -- See \texttt{program\_clock\_referenc\_extension}.
 \item[splice\_countdown] -- See
-  \cite[section~2.4.3.5]{iso-13818-1} for information about this.
+  \cite[section~2.4.3.5]{iso13818-1} for information about this.
 \item[transport\_private\_data\_length] -- The length of the data at the
   immediate following \texttt{transport\_private\_data\_byte[]}. The data
   itself should not extends beyound the adaptation field. So the
@@ -549,12 +583,12 @@ the TS~packet if the \texttt{AF} is 1.
 \item[ltw\_valid\_flag] -- 1 indicates, that the value of \texttt{ltw\_offset}
   is valid. 0 indicates, that the value of \texttt{ltw\_offset} is undefined.
 \item[ltw\_offset] -- See
-  \cite[section~2.4.3.5]{iso-13818-1} for information about this.
+  \cite[section~2.4.3.5]{iso13818-1} for information about this.
 \item[piecewise\_rate] -- The value of this is only valid if both
   \texttt{ltw\_flag} and \texttt{ltw\_valid\_flag} are set to 1. See
-  \cite[section~2.4.3.5]{iso-13818-1} for information about this.
+  \cite[section~2.4.3.5]{iso13818-1} for information about this.
 \item[splice\_type] -- See
-  \cite[section~2.4.3.5]{iso-13818-1} for information about this.
+  \cite[section~2.4.3.5]{iso13818-1} for information about this.
 \item[DTS\_next\_AU]  -- 33 bit value of the DTS. 
 \item[{stuffing\_data[]}] -- All these bytes are 1111\,1111 (0xff). They are
   used to stuff the TS packet to 188 bytes.
@@ -664,6 +698,8 @@ cutting was done.
 \paragraph{ToDo:} Examine the contents of this file after marks are set but
 before cutting. Examine the contents of this file after cutting. Try to find
 out the semantic.
+
+\bibliography{data}
 
 \end{document}
 

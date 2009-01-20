@@ -24,7 +24,9 @@ define run_latex_prog
 $(eval MD5FILES = $(foreach suffix,$(LATEXMD5SUFFIXES),\
                                    $(addsuffix $(suffix),$(basename $@))))
 firstrun=true; \
-while ! $(md5sum) -c $(addsuffix .md5,$(basename $@)); do \
+runbibtext=true; \
+while $$firstrun || ! $(md5sum) -c $(addsuffix .md5,$(basename $@)); do \
+	firstrun=false; \
 	touch $(MD5FILES); \
 	$(md5sum) $(MD5FILES) >$(addsuffix .md5,$(basename $@)) \
 	&& $(1) $(OPTS_LATEX) $(addsuffix .tex,$(basename $@)) \
@@ -32,10 +34,10 @@ while ! $(md5sum) -c $(addsuffix .md5,$(basename $@)); do \
            then \
 		$(makeindex) $(OPTS_MAKEINDEX) $(basename $@); \
 	   fi \
-	&& if $$firstrun \
-	      && $(grep) -q -s '\bibdata' $(addsuffix .aux,$(basename $@)); \
+	&& if $$runbibtex \
+	      && $(grep) -q -s '\\bibdata' $(addsuffix .aux,$(basename $@)); \
            then \
-		firstrun=false; \
+		runbibtex=false; \
 		$(bibtex) $(OPTS_BIBTEX) $(basename $@); \
 	   fi \
 	|| exit 1; \
@@ -48,6 +50,10 @@ endef
 
 define run_pdflatex
 $(call run_latex_prog,$(pdflatex))
+endef
+
+define run_htlatex
+htlatex $< "xhtml,2" "" -d$(top_srcdir)/doc/doc.html/
 endef
 
 ### Local Variables:

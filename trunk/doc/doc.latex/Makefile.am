@@ -17,14 +17,19 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-LATEXMD5SUFFIXES = .aux .idx .ind
-LATEXTMPSUFFIXES = .log .aux .toc .lot .lof .idx .ind .ilg .bbl .blg .out
+LATEXMD5SUFFIXES = .aux .idx .ind .bbl
+LATEXTMPSUFFIXES = .log .aux .toc .lot .lof .idx .ind .ilg .bbl .blg .out \
+                   .lg .dvi .md5 *.html .css .4ct .4tc .idv .xref .tmp
 
 pdfdir      = $(docdir)/doc.pdf
 pdf_DATA    = data.pdf
 
+htmldir     = $(docdir)/doc.html
+html_DATA   = ../doc.html/data*.html ../doc.html/data.css
+
 tex_SOURCE  = $(foreach pdffile,$(pdf_DATA),\
-                        $(addsuffix .tex,$(basename $(pdffile))))
+                        $(addsuffix .tex,$(basename $(pdffile)))) \
+              data.bib
 
 CLEANFILES = $(foreach suffix,$(LATEXTMPSUFFIXES)\
                              ,$(foreach pdffile,$(pdf_DATA),\
@@ -34,5 +39,8 @@ SOURCE_EXTRA = $(tex_SOURCE)
 
 -include $(top_srcdir)/Makefile.rules/Makefile.latex-rules
 
-data.pdf: data.tex
+data.pdf: data.tex data.bib
 	$(run_pdflatex)
+
+../doc.html/data*.html ../doc.html/data.css: data.tex data.bib
+	$(run_htlatex)
