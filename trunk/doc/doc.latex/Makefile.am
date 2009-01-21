@@ -22,25 +22,35 @@ LATEXTMPSUFFIXES = .log .aux .toc .lot .lof .idx .ind .ilg .bbl .blg .out \
                    .lg .dvi .md5 *.html .css .4ct .4tc .idv .xref .tmp
 
 pdfdir      = $(docdir)/doc.pdf
-pdf_DATA    = data.pdf
+pdf_name    = data.pdf
+pdf_DATA    = ../doc.pdf/$(pdf_name)
 
 htmldir     = $(docdir)/doc.html
 html_DATA   = ../doc.html/data*.html ../doc.html/data.css
 
-tex_SOURCE  = $(foreach pdffile,$(pdf_DATA),\
+tex_SOURCE  = $(foreach pdffile,$(pdf_name),\
                         $(addsuffix .tex,$(basename $(pdffile)))) \
               data.bib
 
 CLEANFILES = $(foreach suffix,$(LATEXTMPSUFFIXES)\
-                             ,$(foreach pdffile,$(pdf_DATA),\
+                             ,$(foreach pdffile,$(pdf_name),\
                                         $(addsuffix $(suffix),\
                                                     $(basename $(pdffile)))))
 SOURCE_EXTRA = $(tex_SOURCE)
 
 -include $(top_srcdir)/Makefile.rules/Makefile.latex-rules
 
+../doc.pdf/data.pdf: data.pdf
+	cp data.pdf ../doc.pdf/data.pdf
+
 data.pdf: data.tex data.bib
 	$(run_pdflatex)
 
 ../doc.html/data*.html ../doc.html/data.css: data.tex data.bib
 	$(run_htlatex)
+
+.PHONY: upload
+
+upload:
+	cd ../doc.html && \
+	scp *.html *.css *.png shell.berlios.de:/home/groups/tscomagcv/htdocs/
