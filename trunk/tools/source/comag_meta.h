@@ -18,8 +18,8 @@
 #ifndef _COMAG_META_H
 #define _COMAG_META_H
 
-#include <string>
-#include <istream>
+#include <cstring>
+#include <iostream>
 #include <exception>
 
 using namespace std;
@@ -33,12 +33,20 @@ namespace comag {
 	class failure : public exception {
 
 	public:
-	    explicit failure(const string& __str) : _M_msg( __str ) {};
+	    explicit failure(const string& __str) : _M_msg( __str ) { 
+		_extended_valid = false;
+	    };
 	    virtual ~failure() throw() {};
 	    virtual const char* what() const throw() { return _M_msg.data(); };
+	    const unsigned char *extended_what() const throw() { 
+		return _extended_valid ? _extended : NULL;
+	    };
+	    void extend(const unsigned char buffer[112]);
 
 	private:
 	    string _M_msg;
+	    unsigned char _extended[112];
+	    bool _extended_valid;
 	};
 
 	typedef struct {
@@ -74,7 +82,7 @@ namespace comag {
 
 	void read(std::istream &s);
 	void write(std::ostream &s);
-	void reset(void);
+	void reset(const unsigned char *buffer = NULL);// size of buffer has to be at least 112
 
 	enum_title gettitle_type() { return title_type; }
 	std::string gettitle() { return title; }
@@ -85,8 +93,10 @@ namespace comag {
 	unsigned int getpid() { return pid; }
 	unsigned long gettimer() { return timer; }
 	unsigned int getpackets() { return packets; }
+	const unsigned char *data();
 
-    private:
+     private:
+	unsigned char _data[112];
 	enum_title title_type;
 	std::string title;
 	time start_time;
