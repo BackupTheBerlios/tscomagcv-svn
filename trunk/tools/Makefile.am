@@ -18,4 +18,12 @@
 #
 
 ACLOCAL_AMFLAGS =
+
+doxy_SOURCE = doc/source.doxy
+
+.PHONY: doxy_docu
+
+doxy_doc: $(doxy_SOURCE)
+	$(doxygen) $<
+
 SUBDIRS = source

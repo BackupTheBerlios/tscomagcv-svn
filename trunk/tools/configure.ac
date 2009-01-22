@@ -21,6 +21,7 @@ AC_CONFIG_AUX_DIR([.])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 AC_PROG_LIBTOOL
 AC_PROG_CXX
+AC_PATH_PROG(doxygen,[doxygen],[],[${PATH}])
 
 AC_ENABLE_SHARED([no])
 
