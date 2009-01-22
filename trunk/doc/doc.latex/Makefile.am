@@ -51,6 +51,10 @@ data.pdf: data.tex data.bib
 
 .PHONY: upload
 
-upload:
+upload: $(PDF_DATA) $(html_DATA)
 	cd ../doc.html && \
-	scp *.html *.css *.png shell.berlios.de:/home/groups/tscomagcv/htdocs/
+	scp *.html *.css *.png \
+	shell.berlios.de:/home/groups/tscomagcv/htdocs/
+	cd ../doc.pdf && \
+	scp *.pdf \
+	shell.berlios.de:/home/groups/tscomagcv/htdocs/
