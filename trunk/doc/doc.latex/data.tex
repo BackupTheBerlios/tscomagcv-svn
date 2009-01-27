@@ -53,8 +53,8 @@
 
 \newcommand*{\Comag}{Comag PVR2/100CI\xspace}
 \newcommand*{\Silvercrest}{Silvercrest SL80/2 100CI\xspace}
-\newcommand*{\Boca}{Boca PVR2 100CI}
-\newcommand*{\Digital}{Digital M100/2CI}
+\newcommand*{\Boca}{Boca PVR2 100CI\xspace}
+\newcommand*{\Digital}{Digital M100/2CI\xspace}
 
 \begin{document}
 \pdfbookmark[1]{\Comag}{title}
@@ -179,6 +179,11 @@ have always the same value. \emph{Reserved} bytes are fixed bytes with value
     6c &  1 & Long  & timer number  & All records are done by timers and this
                                       is the number of the timer used for the
                                       record.\tabularnewline
+    \midrule
+    \multicolumn{5}{@{}p{\linewidth}@{}}{%
+      \textbf{Important Note:} The values of Word and Long are big-endians,
+      that means the first byte of a multi byte value is the low byte and the
+      last is the highest one!}\tabularnewline
     \bottomrule
   \end{tabularx}
   \label{tab:meta.dat-structure}
@@ -883,8 +888,8 @@ bytes are colored to mark them.
 \end{tabularx}
 
 Note, that all not 0 values unless \texttt{elapsed\_time} and
-\texttt{unkown\_1} are copies from the Comag info packet at the Comag TS
-header. Only \texttt{elapsed\_time} and \texttt{unkown\_1} change from Comag
+\texttt{unknown\_1} are copies from the Comag info packet at the Comag TS
+header. Only \texttt{elapsed\_time} and \texttt{unknown\_1} change from Comag
 TS info block to Comag TS info block!
 
 
@@ -1039,13 +1044,57 @@ unknown. We have to do more experiments to get more information about those:
 \label{sec:rec.bm-file}
 
 If this file is missing at a record, the receiver recreates an empty
-one. Empty files consist of four Bytes 0xff, followed by one Byte 0x01,
-followed by 411 Bytes 0x00. Nothing more about this file is known, but we
-think, that the marks are saved at this file.
+one. The file saves the marks, e.g., for cutting. The already known structure
+of that file is shown in \autoref{tab:rec.bm-structure}.
 
-\paragraph{Example:}
+\begin{table}\small
+  \centering
+  \ifx \Htmltrue\UnDef
+  \captionabove{Structure of the file \texttt{meta.dat}}
+  \else
+  \captionabove{Structure of the file meta.dat}
+  \fi
+  \label{tab:rec.bm-structure}
+  \begin{tabularx}{\textwidth}{>{\ttfamily}rr@{~}ll>{\raggedright}X}
+    \toprule
+    \multicolumn1{r@{\quad}}{Pos.} & \multicolumn2l{Length} & Semantic &
+    Comment\tabularnewline
+    \midrule
+    000: &  4 & Bytes & \textcolor{unknown}{unknown} 
+                                       & \texttt{ff ff ff ff 01}
+                                         at empty \texttt{rec.bm} 
+                                         \tabularnewline
+    004: &  1 & Word  & next free mark & the number $M$ of the next free mark
+                                        (\texttt{01} = 1 at empty files)
+                                        \tabularnewline
+    006: & 10 & Bytes & reserved       & seems to be 0\tabularnewline
+    010: & $8\cdot(M-1)$ & Bytes & mark structures 
+                                       & array of $(M-1)$ structures:
+                                        \tabularnewline
+         &  1 & Long  & time           & time in ms of first mark
+                                         \tabularnewline
+         &  1 & Long  & Comag info packet number 
+                                       & number of the Comag info packet valid
+                                         for the first mark\tabularnewline
+    010$+8(M-1)$:
+         & 25 & Bytes & reserved       & seems to be 0\tabularnewline
+    041$+8(M-1)$:
+         &  4 & Bytes & \textcolor{unsure}{end mark}       
+                                       & seems to be a copy of 
+                                         \texttt{000}--\texttt{003} at used
+                                         files and 0 at empty files
+                                         \tabularnewline
+    --19f: &  &       & suffing bytes  & all these are 0
+                                         \tabularnewline
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\paragraph{Example of an empty \texttt{rec.bm}:} Empty files consist of four
+Bytes 0xff, followed by one Byte 0x01, followed by 411 Bytes 0x00.
+
 {\small
-\begin{alltt}\color{unknown}
+\begin{alltt}
 00000000  ff ff ff ff 01 00 00 00  00 00 00 00 00 00 00 00  |................|
 00000010  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
 00000020  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
@@ -1074,6 +1123,141 @@ think, that the marks are saved at this file.
 00000190  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
 \end{alltt}
 }
+
+\noindent\begin{tabularx}{\textwidth}{>{\ttfamily}r@{:\hskip2\tabcolsep}l>{\ttfamily}l>{\raggedright}X}
+  \toprule
+  \multicolumn1{r@{\quad}}{Pos.} & Semantic & Value & Explain\tabularnewline
+  \midrule
+  00 & unkown          & \texttt{ff ff ff ff} & always same at empty files
+                                                \tabularnewline
+  04 & next free mark  & \texttt{0001}        & $M=1$, currently no mark set
+                                                \tabularnewline
+  06 & stuffing bytes  & \texttt{00}\dots     & all stuffing bytes are 0
+                                                \tabularnewline
+  \bottomrule
+\end{tabularx}
+
+\paragraph{Example of a used \texttt{rec.bm}:} Currently only some
+informations are known.
+
+{\small
+\begin{alltt}
+00000000  \textcolor{unknown}{89 1f 00 00} 0b 00 00 00  00 00 00 00 00 00 00 00  |................|
+00000010  d0 eb 00 00 f2 02 00 00  fd d9 01 00 e0 05 00 00  |................|
+00000020  ef c3 02 00 d4 08 00 00  cd ab 03 00 f1 0b 00 00  |................|
+00000030  6a 98 04 00 e2 0e 00 00  d6 7e 05 00 c9 11 00 00  |j........~......|
+00000040  b4 6c 06 00 0e 15 00 00  1c 55 07 00 f9 17 00 00  |.l.......U......|
+00000050  42 41 08 00 49 1b 00 00  39 2b 09 00 95 1e 00 00  |BA..I...9+......|
+00000060  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+00000070  00 00 00 00 00 00 00 00  00 \textcolor{unknown}{89 1f 00 00} 00 00 00  |................|
+00000080  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+00000090  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+000000a0  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+000000b0  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+000000c0  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+000000d0  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+000000e0  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+000000f0  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+00000100  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+00000110  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+00000120  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+00000130  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+00000140  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+00000150  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+00000160  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+00000170  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+00000180  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+00000190  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+\end{alltt}
+}
+
+\noindent\begin{tabularx}{\textwidth}{>{\ttfamily}r@{:\hskip2\tabcolsep}l>{\ttfamily}l>{\raggedright}X}
+  \toprule
+  \multicolumn1{r@{\quad}}{Pos.} & Semantic & Value & Explain\tabularnewline
+  \midrule
+  00 & \textcolor{unknown}{unkown}          & \textcolor{unknown}{\texttt{89 1f 00 00}} & \textcolor{unknown}{unknown}
+                                                \tabularnewline
+  04 & next free mark  & \texttt{000b}        & $M=11$, currently 10~marks set
+                                                \tabularnewline
+  06 & reserved        & \texttt{00}\dots     & \tabularnewline
+  10 & time[0]         & \texttt{0000ebd0}    & 1st mark after 60368~ms
+                                                (00:01:00.368)
+                                                \tabularnewline
+  14 & Comag info packet[0]
+                       & \texttt{000002f2}    & 1st mark at Comag info packet
+                                                number 754
+                                                \tabularnewline
+  18 & time[1]         & \texttt{0001d9fd}    & 2nd mark after 121341~ms
+                                                (00:02:01.341)
+                                                \tabularnewline
+  1c & Comag info packet[1]
+                       & \texttt{000005e0}    & 2nd mark at Comag info packet
+                                                number 1504
+                                                \tabularnewline
+  20 & time[2]         & \texttt{0002c3ef}    & 3rd mark after 181231~ms
+                                                (00:03:01.231)
+                                                \tabularnewline
+  24 & Comag info packet[2]
+                       & \texttt{000008d4}    & 3rd mark at Comag info packet
+                                                number 2260
+                                                \tabularnewline
+  28 & time[3]         & \texttt{0003abcd}    & 4th mark after 240589~ms
+                                                (00:04:00.589)
+                                                \tabularnewline
+  2c & Comag info packet[3]
+                       & \texttt{00000bf1}    & 4th mark at Comag info packet
+                                                number 3057
+                                                \tabularnewline
+  30 & time[4]         & \texttt{0004986a}    & 5th mark after 301162~ms
+                                                (00:05:01.162)
+                                                \tabularnewline
+  34 & Comag info packet[4]
+                       & \texttt{00000ee2}    & 5th mark at Comag info packet
+                                                number 3810
+                                                \tabularnewline
+  38 & time[5]         & \texttt{00057ed6}    & 6th mark after 360150~ms
+                                                (00:06:00.150)
+                                                \tabularnewline
+  3c & Comag info packet[5]
+                       & \texttt{000011c9}    & 6th mark at Comag info packet
+                                                number 4553
+                                                \tabularnewline
+  40 & time[6]         & \texttt{00066cb4}    & 7th mark after 421044~ms
+                                                (00:07:01.044)
+                                                \tabularnewline
+  44 & Comag info packet[6]
+                       & \texttt{0000150e}    & 7th mark at Comag info packet
+                                                number 5390
+                                                \tabularnewline
+  48 & time[7]         & \texttt{0007551c}    & 8th mark after 480540~ms
+                                                (00:08:00.540)
+                                                \tabularnewline
+  4c & Comag info packet[7]
+                       & \texttt{000017f9}    & 8th mark at Comag info packet
+                                                number 6137
+                                                \tabularnewline
+  50 & time[8]         & \texttt{00084142}    & 9th mark after 540994~ms
+                                                (00:09:00.994)
+                                                \tabularnewline
+  54 & Comag info packet[8]
+                       & \texttt{00001b49}    & 9th mark at Comag info packet
+                                                number 6985
+                                                \tabularnewline
+  58 & time[9]         & \texttt{00092b39}    & 10th mark after 6000889~ms
+                                                (00:10:00.889)
+                                                \tabularnewline
+  5c & Comag info packet[9]
+                       & \texttt{00001e95}    & 10th mark at Comag info packet
+                                                number 7829
+                                                \tabularnewline
+  60 & reserved        & \texttt{00}\dots     & \tabularnewline
+  79 & \textcolor{unsure}{end mark}        & \textcolor{unsure}{\texttt{89 1f 00 00}} & \textcolor{unsure}{copy of
+                                                \texttt{00}--\texttt{03}}
+                                                \tabularnewline
+  7d & stuffing bytes  & \texttt{00}\dots     & all stuffing bytes are 0
+                                                \tabularnewline
+  \bottomrule
+\end{tabularx}
 
 \paragraph{ToDo:} Examine the contents of this file after marks are set but
 before cutting. Examine the contents of this file after cutting. Try to find
