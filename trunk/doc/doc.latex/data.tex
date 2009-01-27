@@ -42,10 +42,10 @@
 \bibliographystyle{babalpha-fl}
 
 \hypersetup{%
-  pdftitle={Data Formats of the Comag PVR2/100CI or Silvercrest SL80/2 100CI},
+  pdftitle={Data Formats of the Comag PVR2/100CI},
   pdfauthor={Markus Kohm},
   pdfkeywords={meta.dat,rec.cp,rec.bm,rec.ts,Comag PVR2/100CI,%
-    Silvercrest SL80/2 100CI},
+    Silvercrest SL80/2 100CI, Boca PVR2 100CI, Digital M100/2CI},
 }
 
 \colorlet{unsure}{DarkRed}
@@ -53,11 +53,13 @@
 
 \newcommand*{\Comag}{Comag PVR2/100CI\xspace}
 \newcommand*{\Silvercrest}{Silvercrest SL80/2 100CI\xspace}
+\newcommand*{\Boca}{Boca PVR2 100CI}
+\newcommand*{\Digital}{Digital M100/2CI}
 
 \begin{document}
 \pdfbookmark[1]{\Comag}{title}
 \title{Data Formats of the \Comag\footnote{aka
-    \Silvercrest}\,\footnote{This is: ``\SVNId''.}}
+    \Silvercrest aka \Boca aka \Digital}\,\footnote{This is: ``\SVNId''.}}
 \subtitle{Draft}
 \author{Markus Kohm}
 \SVNdate $Date$
@@ -150,7 +152,7 @@ have always the same value. \emph{Reserved} bytes are fixed bytes with value
     0c & 1  & Byte  & type of title & 8 = transmission, 2 = station or manual
                                       input\tabularnewline
     0d & 62 & Byte  & title         & \texttt{NUL} terminated
-                                      string\tabularnewline
+                                      string, ISO-8859-1 encoded\tabularnewline
     4b &  1 & Byte  & hour (start time) & GMT is used!\tabularnewline
     4c &  1 & Byte  & minute (start time) & \tabularnewline
     4d &  1 & Byte  & second (start time) & \tabularnewline
@@ -1023,9 +1025,9 @@ unknown. We have to do more experiments to get more information about those:
   title of the transmission e.g. the movie title. Type~2 is used for records
   using the REC key or a manual timer. In this case the title is the station
   by default and may be changed manually.
-\item[title] -- A NUL-terminated string. Currently only title with encoding
-  US-ASCII are known. Maybe other encodings, e.g. ISO-Latin-1 (aka ISO-8859-1)
-  or UTF-8 are possible.
+\item[title] -- A NUL-terminated string.  Currently only titles with encoding
+  ISO-Latin-1 (aka ISO-8859-1) are known.  No explicite encoding information
+  known.
 \item[stream\_files] -- The \Comag splits streams into portions of less than
   2\,GBytes. The first file is named \texttt{rec.ts}, the next
   \texttt{rec.01}, followed by \texttt{rec.02} and so on. At the header, this
