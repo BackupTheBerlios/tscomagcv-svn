@@ -1,9 +1,13 @@
 To produce all essential files for distribution or make process simply call
 
    make -f Makefile.cvs
+   ./configure
 
 If you want to use kdevelop, you may use
 
    cd <project directory>
    kdevelop kfile_metadat.kdevelop
 
+IMPORTANT: Makefile.cvs adds everything at this directory to the dist-rule!
+Becaus of this, the directory should be really distclean before running ``make
+-f Makefile.cvs''.
