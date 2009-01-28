@@ -22,6 +22,7 @@ menu of e.g. Konqueror with the meta infos from the file.
 %setup
 
 %build
+WANT_AUTOCONF_2_5="1" WANT_AUTOMAKE_1_6="1" LC_MESSAGES="C" LC_TYPE="C" gmake -f Makefile.cvs
 ./configure
 make
 
