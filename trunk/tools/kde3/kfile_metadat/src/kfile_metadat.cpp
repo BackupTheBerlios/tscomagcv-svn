@@ -97,7 +97,7 @@ bool kfile_metadatPlugin::readInfo ( KFileMetaInfo& info, uint what )
         {
             comag::meta m ( ( const unsigned char * ) buffer );
 
-            appendItem ( group, "Title", QString ( m.gettitle() ) );
+            appendItem ( group, "Title", QString::fromLatin1( m.gettitle().data() ) );
             appendItem ( group, "Title Type", ( m.gettitle_type() == comag::meta::TT_TRANSMISSION ) ?
                          i18n ( "Transmission" ) :
                          ( m.gettitle_type() == comag::meta::TT_STATION ) ?
