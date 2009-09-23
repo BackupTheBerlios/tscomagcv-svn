@@ -761,17 +761,21 @@ start to get the payload only. \textcolor{unsure}{Unsure} and
                                                  VTX\tabularnewline
         &                               &    0 & 5th until 8th are unused and
                                                  0\tabularnewline
-    34: & reserved\_2                   &    0 & \tabularnewline
-    38: & aspect\_magic                 & 72 65 67 00 00 00 00 00
-                                               & \textcolor{unsure}{16:9}\tabularnewline
-    40: & reserved\_3                   &    0 & \tabularnewline
+    34: & stream\_lang[8]               & 00000000 & 1st stream language\tabularnewline
+        &                               & 72656700 & 2nd stream language\tabularnewline
+        &                               & 00000000 & 3rd stream language\tabularnewline
+        &                               & 00000000 & 4th stream language\tabularnewline
+        &                               & 00000000 & 5th stream language\tabularnewline
+        &                               & 00000000 & 6th stream language\tabularnewline
+        &                               & 00000000 & 7th stream language\tabularnewline
+        &                               & 00000000 & 8th stream language\tabularnewline
     54: & elapsed\_time                 & 00000000 & Start of record\tabularnewline
     58: & unknown\_1                    & 00000000 & Start of record\tabularnewline
-    5c: & reserved\_4                   &    0 & \tabularnewline
+    5c: & reserved\_3                   &    0 & \tabularnewline
     60: & title\_type                   &   08 & transmission (from EPG)\tabularnewline
     61: & title                         & James Bond 007 - Im Geheimdien &
     Some characters from the movie title\tabularnewline
-    9f: & reserved\_5                   &    0 & \tabularnewline
+    9f: & reserved\_4                   &    0 & \tabularnewline
     ac: & \textcolor{unsure}{unknown\_2}
                                         & \textcolor{unsure}{00002657} 
                                                & \textcolor{unsure}{maybe
@@ -782,7 +786,7 @@ start to get the payload only. \textcolor{unsure}{Unsure} and
                                                  \texttt{rec.01}, 
                                                  \texttt{rec.02}, and
                                                  \texttt{rec.03}\tabularnewline 
-    b4: & reserved\_3                   &    0 & \tabularnewline
+    b4: & reserved\_5                   &    0 & \tabularnewline
     \bottomrule
 \end{tabularx}
 
@@ -863,10 +867,15 @@ bytes are colored to mark them.
                                                  VTX\tabularnewline
         &                               &    0 & 5th until 8th are unused and
                                                  0\tabularnewline
-    34: & reserved\_2                   &    0 & \tabularnewline
-    38: & aspect\_magic                 & 72 65 67 00 00 00 00 00
-                                               & \textcolor{unsure}{16:9}\tabularnewline
-    40: & reserved\_3                   &    0 & \tabularnewline
+    34: & stream\_lang[8]               & 00000000 & 1st stream language\tabularnewline
+        &                               & 72656700 & 2nd stream language (ger
+        = german)\tabularnewline
+        &                               & 00000000 & 3rd stream language\tabularnewline
+        &                               & 00000000 & 4th stream language\tabularnewline
+        &                               & 00000000 & 5th stream language\tabularnewline
+        &                               & 00000000 & 6th stream language\tabularnewline
+        &                               & 00000000 & 7th stream language\tabularnewline
+        &                               & 00000000 & 8th stream language\tabularnewline
     54: & elapsed\_time                 & 002439b9 & duration until now:
                                                  2374073\,ms = 00:39:34.073
                                                  \tabularnewline
@@ -874,16 +883,16 @@ bytes are colored to mark them.
                                         & \textcolor{unknown}{e8 d2 77 00} 
                                                & \textcolor{unknown}{???}
                                                  \tabularnewline
-    5c: & reserved\_4                   &    0 & \tabularnewline
+    5c: & reserved\_3                   &    0 & \tabularnewline
     60: & title\_type                   &   08 & transmission (from EPG)\tabularnewline
     61: & title                         & James Bond 007 - Im Geheimdien &
     Some characters from the movie title\tabularnewline
-    9f: & reserved\_5                   &    0 & \tabularnewline
+    9f: & reserved\_4                   &    0 & \tabularnewline
     ac: & unknown\_2                    &    0 & always 0 at Comag TS info block
                                                  \tabularnewline
     b0: & stream\_files                 &    0 & always 0 at Comag TS info block
                                                  \tabularnewline
-    b4: & reserved\_3                   &    0 & \tabularnewline
+    b4: & reserved\_5                   &    0 & \tabularnewline
     \bottomrule
 \end{tabularx}
 
@@ -942,35 +951,31 @@ payload may be found at \autoref{tab:comag-info-packet}. Examples are shown at
                                   \texttt{02}: audio stream\\
                                   \texttt{04}: VTX stream
                                   \tabularnewline
-      reserved\_2          &  4 & always 0\tabularnewline
-      aspect\_magic        &  8 & 8 bytes indicating the aspect ratio of the
-                                  video stream:\\
-                                  \texttt{72 65 67 00 00 00 00 00}: 16:9~PS
-                                  \\
-                                  \texttt{72 65 67 00 65 67 66 00}: 16:9
-                                  anamorphic\\
-                                  \texttt{72 65 67 00 72 65 67 00}: 4:3
-                                  \tabularnewline
-      reserved\_3          & 20 & always 0\tabularnewline
+      stream\_language[8]  & 32 & The languages of the streams.\\
+                                  Only audio streams have a language.\\
+                                  The language is a big-endian-value of a
+                                  three character language code, e.g.,
+                                  72656700 for \emph{ger}, 65726600 for
+                                  \emph{fre} etc.\tabularnewline
       elapsed\_time        &  4 & elapsed duration of the record in ms
                                   (1\,kHz)
                                   \tabularnewline
       \textcolor{unknown}{unknown\_1} 
                            &  4 & \tabularnewline
-      reserved\_4          &  4 & always 0\tabularnewline
+      reserved\_3          &  4 & always 0\tabularnewline
       title\_type          &  1 & Type of title:\\
                                   \texttt{02} = station or manual input\\
                                   \texttt{08} = transmission (by EPG)
                                   \tabularnewline
       title                & 62 & NUL terminating string with title of record
                                   \tabularnewline
-      reserved\_5          & 13 & always 0\tabularnewline
+      reserved\_4          & 13 & always 0\tabularnewline
       \textcolor{unknown}{unknown\_2}
                            &  4 & \tabularnewline
       stream\_files        &  4 & number of files the complete transport
                                   stream consists of
                                   \tabularnewline
-      reserved\_3          &  8 & always 0
+      reserved\_5          &  8 & always 0
                                   \tabularnewline
       \midrule
       \multicolumn{3}{@{}p{\linewidth}@{}}{%
@@ -989,8 +994,6 @@ unknown. We have to do more experiments to get more information about those:
 \begin{labeling}[:]{99-99}
 \item[00--04] We don't know if the magic number really consists of 5\,Bytes or
   if some of these bytes have special meanings.
-\item[34--3b] Currently only four aspect ratio magics are known, but there
-  must be more.
 \item[54--57] These bytes seam to be a four byte value, that increases
   rapidly, but we do not know anything about.
 \item[a8--ab] These bytes are not 0 and not fixed, but we do not know anything
@@ -1018,9 +1021,8 @@ unknown. We have to do more experiments to get more information about those:
 \item[{pid\_type[8]}] -- The types of the PIDs saved at \texttt{pid[8]}. EPG
   streams has the type~0, video streams the type~1, audio streams the type~2,
   and VTX streams the type~4. Other values currently not known.
-\item[aspect\_magic] -- The known values are results of experiments. I'm sure
-  there are many more and currently do not know what happens, if the wrong
-  value is used.
+\item[{stream\_lang[8]}] -- you may simply read/write the three characters of
+  the language name from right to left with 4th byte is NUL.
 \item[elapsed\_time] -- This is the current duration of the record in
   milliseconds (or kHz). It is 0 at the header and updated at the info blocks.
 \item[unknown\_1] -- We really should know more about this but don't. It is 0
@@ -1313,6 +1315,4 @@ out the semantic.
 %%% mode: latex
 %%% TeX-master: t
 %%% mode: Tex-pdf
-%%% mode: reftex
-%%% reftex-plug-into-AUCTeX: t
 %%% End: 
