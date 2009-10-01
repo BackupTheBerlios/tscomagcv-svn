@@ -172,7 +172,7 @@ have always the same value. \emph{Reserved} bytes are fixed bytes with value
     5f &  1 & Byte  & reserved      & \tabularnewline
     60 &  1 & Byte  & service       & 0 = TV, 1 = Radio\tabularnewline
     61 &  3 & Bytes & reserved      & \tabularnewline
-    64 &  1 & Byte  & \textcolor{unsure}{fixed 01}      & \textcolor{unsure}{semantic unkown}\tabularnewline
+    64 &  1 & Byte  & \textcolor{unsure}{fixed 01}      & \textcolor{unsure}{semantic unknown}\tabularnewline
     65 &  3 & Bytes & reserved      & \tabularnewline
     68 &  1 & Word  & PID           & the program ID\tabularnewline
     6a &  2 & Bytes & reserved      & \tabularnewline
@@ -974,8 +974,11 @@ payload may be found at \autoref{tab:comag-info-packet}. Examples are shown at
       title                & 62 & NUL terminating string with title of record
                                   \tabularnewline
       reserved\_4          & 13 & always 0\tabularnewline
-      \textcolor{unknown}{unknown\_2}
-                           &  4 & \tabularnewline
+      sections\_per\_file  &  4 & number of sections (each section starts with
+                                  either a Comag info header or a Comag info
+                                  block) after that the next ts file must be
+                                  opened
+                                  \tabularnewline
       stream\_files        &  4 & number of files the complete transport
                                   stream consists of
                                   \tabularnewline
@@ -1135,7 +1138,7 @@ Bytes 0xff, followed by one Byte 0x01, followed by 411 Bytes 0x00.
   \toprule
   \multicolumn1{r@{\quad}}{Pos.} & Semantic & Value & Explain\tabularnewline
   \midrule
-  00 & unkown          & \texttt{ff ff ff ff} & always same at empty files
+  00 & unknown         & \texttt{ff ff ff ff} & always same at empty files
                                                 \tabularnewline
   04 & next free mark  & \texttt{0001}        & $M=1$, currently no mark set
                                                 \tabularnewline
@@ -1182,7 +1185,7 @@ informations are known.
   \toprule
   \multicolumn1{r@{\quad}}{Pos.} & Semantic & Value & Explain\tabularnewline
   \midrule
-  00 & \textcolor{unknown}{unkown}          & \textcolor{unknown}{\texttt{89 1f 00 00}} & \textcolor{unknown}{unknown}
+  00 & \textcolor{unknown}{unknown}         & \textcolor{unknown}{\texttt{89 1f 00 00}} & \textcolor{unknown}{unknown}
                                                 \tabularnewline
   04 & next free mark  & \texttt{000b}        & $M=11$, currently 10~marks set
                                                 \tabularnewline
