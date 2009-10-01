@@ -388,7 +388,7 @@ structure of TS~packets may be found at \autoref{tab:ts-general}.
   the \texttt{adaptation\_field} is used and $N$ ist not 0. The second (lower)
   bit is \texttt{PD}. If \texttt{PD} was set, the \texttt{data\_byte[]} array
   has payload data and not only suffing bytes.
-\item[continuity\_counter] -- This value is PID dependent. Is increases for
+\item[continuity\_counter] -- This value is PID dependent. It increases for
   every packets with the same PID. If two consecutive TS packets have the same
   PID and the same \texttt{continuity\_counter} they are
   duplicates. Duplicates may be send for synchronization purpose.
@@ -728,6 +728,8 @@ start to get the payload only. \textcolor{unsure}{Unsure} and
                                                  \tabularnewline
         & PID                           & 1fff & PID of null packet
                                                  \tabularnewline
+    03: & \textrm{Flags \&} continuity\_counter &   10 & always 10
+                                                 \tabularnewline
     04: & \textcolor{unsure}{magic}     & \textcolor{unsure}{0232231001}
                                                & \textcolor{unsure}{magic
                                                  header}
@@ -777,11 +779,10 @@ start to get the payload only. \textcolor{unsure}{Unsure} and
     61: & title                         & James Bond 007 - Im Geheimdien &
     Some characters from the movie title\tabularnewline
     9f: & reserved\_4                   &    0 & \tabularnewline
-    ac: & \textcolor{unsure}{unknown\_2}
-                                        & \textcolor{unsure}{00002657} 
-                                               & \textcolor{unsure}{maybe
-                                                 fixed}
-                                                 \tabularnewline
+    ac: & sections\_per\_file           & 0x00005726 & 22310 sections/file =
+                                                       11422720 packets/file =
+                                                       2147471360 bytes/file
+                                                       \tabularnewline
     b0: & stream\_files                 & 00000004 & 4 stream files
                                                  \texttt{rec.ts}, 
                                                  \texttt{rec.01}, 
@@ -837,6 +838,8 @@ bytes are colored to mark them.
                                                  \tabularnewline
         & PID                           & 1fff & PID of null packet
                                                  \tabularnewline
+    03: & \textrm{Flags \&} continuity\_counter &   10 & always 10
+                                                 \tabularnewline
     04: & \textcolor{unsure}{magic}     & \textcolor{unsure}{0232231001}
                                                & \textcolor{unsure}{magic
                                                  header}
@@ -889,7 +892,7 @@ bytes are colored to mark them.
     61: & title                         & James Bond 007 - Im Geheimdien &
     Some characters from the movie title\tabularnewline
     9f: & reserved\_4                   &    0 & \tabularnewline
-    ac: & unknown\_2                    &    0 & always 0 at Comag TS info block
+    ac: & sections\_per\_file           &    0 & always 0 at Comag TS info block
                                                  \tabularnewline
     b0: & stream\_files                 &    0 & always 0 at Comag TS info block
                                                  \tabularnewline
